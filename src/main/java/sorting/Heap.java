@@ -1,14 +1,14 @@
 package sorting;
 
 import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.OptionalInt;
 
 /**
  * Limited implementation of a heap data structure
  *
- * <p>Known limitation are that the max ever size of the heap is the size of the initializing
- * collection, and the heap cannot be initialized with an empty collection.
+ * <p>Known limitation are that the heap cannot be initialized with an empty collection.
  *
  * @param <T> element type
  */
@@ -17,7 +17,7 @@ public final class Heap<T extends Comparable<? super T>> {
   private final boolean minHeap;
 
   // zeroth element is always ignored for easy position calculation
-  private final T[] heap;
+  private T[] heap;
   private int end = 0;
 
   public static <T extends Comparable<? super T>> Heap<T> minHeap(Collection<T> elements) {
@@ -33,12 +33,27 @@ public final class Heap<T extends Comparable<? super T>> {
     this.minHeap = minHeap;
     @SuppressWarnings("unchecked")
     T[] heap = (T[]) Array.newInstance(elements.iterator().next().getClass(), elements.size() + 1);
+
+    int pos = 1;
+    for (T element : elements) {
+      heap[pos] = element;
+      pos++;
+    }
     this.heap = heap;
-    elements.forEach(this::insert);
+
+    // shortcut for array initialization
+    // the last half the heap array are all leaf nodes with no children so they already dominate
+    // their non-existent children
+    end = heap.length - 1;
+    for (int i = heap.length - 1; i > 0; i--) {
+      bubbleDown(i);
+    }
   }
 
   public Heap<T> insert(T element) {
-    assert end < heap.length;
+    if (end == heap.length - 1) { // double the size of the internal heap array if needed
+      this.heap = Arrays.copyOf(this.heap, this.heap.length * 2);
+    }
     end += 1;
     heap[end] = element;
     bubbleUp(end);

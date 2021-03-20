@@ -27,14 +27,14 @@ class HeapTest {
   @MethodSource("collectionProvider")
   void getMin(Collection<Integer> elements) {
     Heap<Integer> heap = Heap.minHeap(elements);
-    assertEquals(heap.head(), Collections.min(elements));
+    assertEquals(Collections.min(elements), heap.head());
   }
 
   @ParameterizedTest
   @MethodSource("collectionProvider")
   void getMax(Collection<Integer> elements) {
     Heap<Integer> heap = Heap.maxHeap(elements);
-    assertEquals(heap.head(), Collections.max(elements));
+    assertEquals(Collections.max(elements), heap.head());
   }
 
   @ParameterizedTest
@@ -47,7 +47,7 @@ class HeapTest {
     }
 
     List<Integer> sortedElements = elements.stream().sorted().collect(Collectors.toList());
-    assertEquals(fromHeap, sortedElements);
+    assertEquals(sortedElements, fromHeap);
   }
 
   @ParameterizedTest
@@ -61,6 +61,22 @@ class HeapTest {
 
     List<Integer> sortedElements =
         elements.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
-    assertEquals(fromHeap, sortedElements);
+    assertEquals(sortedElements, fromHeap);
+  }
+
+  @ParameterizedTest
+  @MethodSource("collectionProvider")
+  void insertMin(List<Integer> elements) {
+    Heap<Integer> heap = Heap.minHeap(elements);
+    heap.insert(Integer.MIN_VALUE).insert(Integer.MAX_VALUE);
+    assertEquals(Integer.MIN_VALUE, heap.head());
+  }
+
+  @ParameterizedTest
+  @MethodSource("collectionProvider")
+  void insertMax(List<Integer> elements) {
+    Heap<Integer> heap = Heap.maxHeap(elements);
+    heap.insert(Integer.MIN_VALUE).insert(Integer.MAX_VALUE);
+    assertEquals(Integer.MAX_VALUE, heap.head());
   }
 }
