@@ -3,7 +3,6 @@ package sorting;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.OptionalInt;
 
 /**
  * Limited implementation of a heap data structure
@@ -18,7 +17,7 @@ public final class Heap<T extends Comparable<? super T>> {
 
   // zeroth element is always ignored for easy position calculation
   private T[] heap;
-  private int end = 0;
+  private int end;
 
   public static <T extends Comparable<? super T>> Heap<T> minHeap(Collection<T> elements) {
     return new Heap<>(true, elements);
@@ -45,7 +44,7 @@ public final class Heap<T extends Comparable<? super T>> {
     // the last half the heap array are all leaf nodes with no children so they already dominate
     // their non-existent children
     end = heap.length - 1;
-    for (int i = heap.length - 1; i > 0; i--) {
+    for (int i = end; i > 0; i--) {
       bubbleDown(i);
     }
   }
@@ -69,7 +68,7 @@ public final class Heap<T extends Comparable<? super T>> {
     T element = heap[position];
     T parent = heap[parentPosition];
 
-    int comparison = minHeap ? element.compareTo(parent) : -element.compareTo(parent);
+    int comparison = comparePositions(position, parentPosition);
     if (comparison < 0) {
       heap[position] = parent;
       heap[parentPosition] = element;
@@ -77,10 +76,12 @@ public final class Heap<T extends Comparable<? super T>> {
     }
   }
 
+  /** @return the value at the current head of the heap */
   public T head() {
     return heap[1];
   }
 
+  /** @return and remove the current head of the heap */
   public T pop() {
     T out = heap[1];
     heap[1] = heap[end];
@@ -90,41 +91,42 @@ public final class Heap<T extends Comparable<? super T>> {
   }
 
   private void bubbleDown(int position) {
-    OptionalInt dominantChildPosition = dominantChildPosition(position);
-    if (dominantChildPosition.isEmpty()) {
+    int dominantChildPosition = dominantChildPosition(position);
+    if (dominantChildPosition <= 0) {
       return;
     }
-    int childPosition = dominantChildPosition.getAsInt();
     T element = heap[position];
-    int comparison =
-        minHeap ? element.compareTo(heap[childPosition]) : -element.compareTo(heap[childPosition]);
+    int comparison = comparePositions(position, dominantChildPosition);
     if (comparison > 0) {
-      heap[position] = heap[childPosition];
-      heap[childPosition] = element;
-      bubbleDown(childPosition);
+      heap[position] = heap[dominantChildPosition];
+      heap[dominantChildPosition] = element;
+      bubbleDown(dominantChildPosition);
     }
   }
 
-  private OptionalInt dominantChildPosition(int position) {
+  private int dominantChildPosition(int position) {
     int leftChildPosition = position * 2;
     if (leftChildPosition > end) {
-      return OptionalInt.empty();
+      return -1;
     }
 
     int rightChildPosition = leftChildPosition + 1;
     if (rightChildPosition > end) {
-      return OptionalInt.of(leftChildPosition);
+      return leftChildPosition;
     }
 
-    int comparison = heap[leftChildPosition].compareTo(heap[rightChildPosition]);
-    if (minHeap) {
-      comparison *= -1;
-    }
-    if (comparison > 0) {
-      return OptionalInt.of(leftChildPosition);
+    int comparison = comparePositions(leftChildPosition, rightChildPosition);
+    if (comparison < 0) {
+      return leftChildPosition;
     } else {
-      return OptionalInt.of(rightChildPosition);
+      return rightChildPosition;
     }
+  }
+
+  private int comparePositions(int firstPosition, int secondPosition) {
+    return minHeap
+        ? heap[firstPosition].compareTo(heap[secondPosition])
+        : -heap[firstPosition].compareTo(heap[secondPosition]);
   }
 
   public int size() {
