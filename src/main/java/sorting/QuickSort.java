@@ -1,9 +1,16 @@
 package sorting;
 
+import java.util.Random;
+
 public final class QuickSort {
+  private static final Random randomGen = new Random();
 
   public static <T extends Comparable<? super T>> void quicksort(T[] elements) {
     quicksort(elements, 0, elements.length - 1);
+  }
+
+  public static <T extends Comparable<? super T>> T[] topKValues(T[] elements) {
+    return elements;
   }
 
   private static <T extends Comparable<? super T>> void quicksort(T[] elements, int low, int high) {
@@ -21,6 +28,8 @@ public final class QuickSort {
    * then return the partition index.
    */
   private static <T extends Comparable<? super T>> int partition(T[] elements, int low, int high) {
+    int k = randomGen.nextInt(high + 1 - low) + low;
+    swap(elements, k, high);
     int partition = high;
     int firstHigh = low;
     for (int i = low; i < high; i++) {
