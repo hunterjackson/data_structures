@@ -1,5 +1,6 @@
 package sorting;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public final class QuickSort {
@@ -9,8 +10,18 @@ public final class QuickSort {
     quicksort(elements, 0, elements.length - 1);
   }
 
-  public static <T extends Comparable<? super T>> T[] topKValues(T[] elements) {
-    return elements;
+  public static <T extends Comparable<? super T>> T[] topKValues(T[] elements, int k) {
+    assert k < elements.length;
+
+    int midPosition = partition(elements, 0, elements.length - 1);
+    while (midPosition != k) {
+      if (midPosition < k) {
+        midPosition = partition(elements, midPosition, elements.length - 1);
+      } else {
+        midPosition = partition(elements, 0,midPosition - 1);
+      }
+    }
+    return Arrays.copyOf(elements, k);
   }
 
   private static <T extends Comparable<? super T>> void quicksort(T[] elements, int low, int high) {
