@@ -14,31 +14,31 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class HeapTest {
 
-  private static final List<Integer> descendingList = List.of(9, 8, 7, 6, 5, 4, 3, 2, 1, 0);
-  private static final List<Integer> ascendingList = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
-  private static final List<Integer> arbitraryList =
+  static final List<Integer> descendingList = List.of(9, 8, 7, 6, 5, 4, 3, 2, 1, 0);
+  static final List<Integer> ascendingList = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+  static final List<Integer> arbitraryList =
       List.of(3, 2, 1, 2, 2, 4, 5, 6, 3, 8, 8, 6, 7, 4, 6, 9);
 
-  private static Stream<Collection<Integer>> collectionProvider() {
+  private static Stream<Collection<Integer>> listProvider() {
     return Stream.of(descendingList, ascendingList, arbitraryList);
   }
 
   @ParameterizedTest
-  @MethodSource("collectionProvider")
+  @MethodSource("listProvider")
   void getMin(Collection<Integer> elements) {
     Heap<Integer> heap = Heap.minHeap(elements);
     assertEquals(Collections.min(elements), heap.head());
   }
 
   @ParameterizedTest
-  @MethodSource("collectionProvider")
+  @MethodSource("listProvider")
   void getMax(Collection<Integer> elements) {
     Heap<Integer> heap = Heap.maxHeap(elements);
     assertEquals(Collections.max(elements), heap.head());
   }
 
   @ParameterizedTest
-  @MethodSource("collectionProvider")
+  @MethodSource("listProvider")
   void popMin(List<Integer> elements) {
     Heap<Integer> heap = Heap.minHeap(elements);
     List<Integer> fromHeap = new ArrayList<>(elements.size());
@@ -51,7 +51,7 @@ class HeapTest {
   }
 
   @ParameterizedTest
-  @MethodSource("collectionProvider")
+  @MethodSource("listProvider")
   void popMax(List<Integer> elements) {
     Heap<Integer> heap = Heap.maxHeap(elements);
     List<Integer> fromHeap = new ArrayList<>(elements.size());
@@ -65,7 +65,7 @@ class HeapTest {
   }
 
   @ParameterizedTest
-  @MethodSource("collectionProvider")
+  @MethodSource("listProvider")
   void insertMin(List<Integer> elements) {
     Heap<Integer> heap = Heap.minHeap(elements);
     heap.insert(Integer.MIN_VALUE).insert(Integer.MAX_VALUE);
@@ -73,7 +73,7 @@ class HeapTest {
   }
 
   @ParameterizedTest
-  @MethodSource("collectionProvider")
+  @MethodSource("listProvider")
   void insertMax(List<Integer> elements) {
     Heap<Integer> heap = Heap.maxHeap(elements);
     heap.insert(Integer.MIN_VALUE).insert(Integer.MAX_VALUE);

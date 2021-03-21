@@ -2,7 +2,7 @@ package sorting;
 
 import java.util.LinkedList;
 
-public class MergeSort {
+public final class MergeSort {
 
   public static <T extends Comparable<? super T>> LinkedList<T> mergesort(LinkedList<T> elements) {
     assert elements.size() > 0;
